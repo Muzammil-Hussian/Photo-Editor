@@ -1,0 +1,9 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="spacing_xs">12dp</dimen>
+    <dimen name="spacing_s">16dp</dimen>
+    <dimen name="spacing_xxs">8dp</dimen>
+    <dimen name="Spacing_xxx_md">48dp</dimen>
+    <dimen name="drag_select_hotspot_height">56dp</dimen>
+
+</resources>

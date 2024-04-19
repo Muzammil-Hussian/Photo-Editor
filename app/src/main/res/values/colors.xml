@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="red_700">#FFD32F2F</color>
+    <color name="red_400">#FFEF5350</color>
+    <color name="indigo_200">#FF9FA8DA</color>
+    <color name="indigo_500">#FF3F51B5</color>
+    <color name="indigo_800">#FF283593</color>
+    <color name="light_blue_200">#FF81D4FA</color>
+    <color name="light_blue_700">#FF0288D1</color>
+    <color name="grey">#4D4D4D</color>
+    <color name="appBackgroundColor">#EBEBEB</color>
+    <color name="surfaceColor">#F5F6FF</color>
+    <!-- Default values -->
+
+    <color name="primaryColor">#3B7DED</color>
+    <color name="secondaryColor">#D0E0FB</color>
+
+    <color name="heading_color">#1A1A1A</color>
+
+    <color name="default_text_color">@color/grey</color>
+    <color name="default_background_color">@color/indigo_800</color>
+    <color name="default_primary_color">@color/primaryColor</color>
+    <color name="default_app_icon_color">@color/primaryColor</color>
+    <color name="default_accent_color">@color/primaryColor</color>
+    <color name="default_widget_bg_color">#AA000000</color>
+    <color name="default_widget_text_color">@color/primaryColor</color>
+    <color name="pressed_item_foreground">#08000000</color>
+    <color name="activated_item_foreground">#44888888</color>
+
+    <color name="textColorPrimary">#443F3F</color>
+    <color name="textColorSecondary">#919296</color>
+    <color name="textColorTypo">#454545</color>
+    <color name="green_dark">#02C68E</color>
+    <color name="green_bright_lime">#5BC346</color>
+    <color name="orange_vibrant">#FF7954</color>
+    <color name="red_bright_coral">#FF6761</color>
+    <color name="orange_fiery">#FF5607</color>
+    <color name="purple">#A767F1</color>
+    <color name="sky_blue">#79DEFC</color>
+    <color name="gentle_sky_blue">#E8EFFD</color>
+
+    <color name="brown">#D38718</color>
+    <color name="yellow">#F0B501</color>
+
+    <color name="light_red">#E3E3E3</color>
+
+
+    <!--revamping colors-->
+    <color name="alert_danger_color">#E6102A</color>
+    <color name="alert_danger_color_as_background">#1FE6102A</color>
+
+    <color name="disable_color">#804D4D4D</color>
+    <color name="surface_grey">#F2F2F2</color>
+
+    <color name="sub_heading_color">#333333</color>
+    <color name="outline_color">#E0E8FC</color>
+
+    <color name="tagline_color">#666666</color>
+
+    <color name="bg_red_alpha_12">#1FE6102A</color>
+    <color name="button_bg_light_red">#1FE6102A</color>
+
+    <color name="grey10_alpha_50">#801A1A1A</color>
+    <color name="grey10_alpha_80">#CC1A1A1A</color>
+    <color name="testing_gradient_end">#E3762D</color>
+    <color name="testing_gradient_start">#7D4119</color>
+
+
+    <color name="grey_gradient_start">#CCCCCC</color>
+    <color name="grey_gradient_end">#666666</color>
+
+    <color name="red_gradient_start">#FF6761</color>
+    <color name="red_gradient_end">#993E3A</color>
+    <color name="yellow_gradient_start">#F0B501</color>
+    <color name="yellow_gradient_end">#8A6801</color>
+    <color name="blue_gradient_start">#3B7DED</color>
+    <color name="blue_gradient_end">#224787</color>
+    <color name="purple_gradient_start">#8953E6</color>
+    <color name="purple_gradient_end">#4C2E80</color>
+    <color name="green_gradient_start">#00CC69</color>
+    <color name="green_gradient_end">#006634</color>
+    <color name="red_dark_gradient_start">#E6102A</color>
+    <color name="red_dark_gradient_end">#800917</color>
+    <color name="orange_gradient_start">#E3762D</color>
+    <color name="orange_gradient_end">#7D4119</color>
+    <color name="light_blue_gradient_start">#73A2F2</color>
+    <color name="light_blue_gradient_end">#435E8C</color>
+    <color name="white_gradient_start">#FFFFFF</color>
+    <color name="white_gradient_end">#999999</color>
+</resources>

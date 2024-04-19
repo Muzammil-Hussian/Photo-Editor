@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.MainFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_main">
+
+        <action
+            android:id="@+id/action_mainFragment_to_photoEditorFragment"
+            app:destination="@id/photoEditorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoEditorFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.editor.PhotoEditorFragment"
+        android:label="Edit Image"
+        tools:layout="@layout/fragment_photo_editor">
+        <action
+            android:id="@+id/action_photoEditorFragment_to_photoAdjustFragment"
+            app:destination="@id/photoAdjustFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_photoRotateFragment"
+            app:destination="@id/photoRotateFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_photoFilterFragment"
+            app:destination="@id/photoFilterFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_photoCropFragment"
+            app:destination="@id/photoCropFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_addTextFragment"
+            app:destination="@id/addTextFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_drawFragment"
+            app:destination="@id/drawFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_backgroundFragment"
+            app:destination="@id/backgroundFragment" />
+        <action
+            android:id="@+id/action_photoEditorFragment_to_shareImageFragment"
+            app:destination="@id/shareImageFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoCropFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.crop.PhotoCropFragment"
+        android:label="Crop"
+        tools:layout="@layout/fragment_photo_crop" />
+    <fragment
+        android:id="@+id/photoRotateFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.fragment.PhotoRotateFragment"
+        android:label="Rotate"
+        tools:layout="@layout/fragment_photo_rotate" />
+    <fragment
+        android:id="@+id/photoAdjustFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.adjust.PhotoAdjustFragment"
+        android:label="Adjust Image"
+        tools:layout="@layout/fragment_photo_adjust" />
+    <fragment
+        android:id="@+id/photoFilterFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.filter.PhotoFilterFragment"
+        android:label="Filters"
+        tools:layout="@layout/fragment_photo_filter" />
+    <fragment
+        android:id="@+id/addTextFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.addText.AddTextFragment"
+        android:label="Text"
+        tools:layout="@layout/fragment_add_text" />
+    <fragment
+        android:id="@+id/drawFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.draw.DrawFragment"
+        android:label="Brush"
+        tools:layout="@layout/fragment_draw" />
+    <fragment
+        android:id="@+id/backgroundFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.background.BackgroundFragment"
+        android:label="Background"
+        tools:layout="@layout/fragment_background" />
+    <fragment
+        android:id="@+id/shareImageFragment"
+        android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.shareImage.ShareImageFragment"
+        android:label="Share file"
+        tools:layout="@layout/fragment_share_image" />
+
+</navigation>
