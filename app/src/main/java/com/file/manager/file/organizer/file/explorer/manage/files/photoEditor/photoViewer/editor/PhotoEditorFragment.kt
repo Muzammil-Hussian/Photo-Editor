@@ -2,7 +2,9 @@ package com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.p
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +12,8 @@ import android.view.View
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.R
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.databinding.FragmentPhotoEditorBinding
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.extensions.beGone
@@ -37,9 +41,18 @@ class PhotoEditorFragment : AbsLoadingDialog<FragmentPhotoEditorBinding>() {
         setupAdapter()
 
         photoEditorViewModel.resultUri.observe(viewLifecycleOwner) {
-            Log.i(TAG, "resultUri: $it")
-//            Glide.with(globalContext).load(it).into(binding.image.source)
-            binding.image.source.setImageURI(it)
+            Log.i(TAG, "resultUri-->: $it")
+            Glide.with(requireActivity()).load(it).diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(binding.image.source)
+
+//            val options =
+//                RequestOptions().format(DecodeFormat.PREFER_ARGB_8888).skipMemoryCache(true)
+//                    .diskCacheStrategy(DiskCacheStrategy.NONE).fitCenter()
+//
+//            Glide.with(requireContext()).applyDefaultRequestOptions(options)
+//            .load(it).into(binding.image.source)
+
+
+//            binding.image.source.setImageURI(it)
 
         }
 
@@ -57,6 +70,8 @@ class PhotoEditorFragment : AbsLoadingDialog<FragmentPhotoEditorBinding>() {
         photoEditorViewModel.showLoading()
         val fileName = System.currentTimeMillis().toString() + ".png"
         val hasStoragePermission = ContextCompat.checkSelfPermission(globalContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+        Log.i(TAG, "saveImage: permission: $hasStoragePermission")
+        Log.i(TAG, "saveImage: sdkVersion: ${FileSaveHelper.isSdkHigherThan28()}")
         if (hasStoragePermission || FileSaveHelper.isSdkHigherThan28()) {
             mSaveFileHelper.createFile(fileName, object : FileSaveHelper.OnFileCreateResult {
 
@@ -77,11 +92,20 @@ class PhotoEditorFragment : AbsLoadingDialog<FragmentPhotoEditorBinding>() {
                             val result = photoEditor.saveAsFile(filePath, saveSettings)
 
                             if (result is SaveFileResult.Success) {
-                                mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(globalContext.contentResolver)
+
+                                if (!FileSaveHelper.isSdkHigherThan28()) {
+                                    MediaScannerConnection.scanFile(requireContext(), arrayOf(filePath), null) { path, uri ->
+                                        Log.i("ExternalStorage", "Scanned $path:")
+                                        Log.i("ExternalStorage", "-> uri=$uri")
+                                    }
+                                } else {
+                                    mSaveFileHelper.notifyThatFileIsNowPubliclyAvailable(globalContext.contentResolver)
+                                }
+
                                 photoEditorViewModel.hideLoading()
-                                showSnackBar("Image Saved Successfully")
                                 photoEditorViewModel.setUri(uri!!)
                                 navigateToNextFragment(R.id.action_photoEditorFragment_to_shareImageFragment)
+                                showSnackBar("Image Saved Successfully")
                             } else {
                                 photoEditorViewModel.hideLoading()
                                 showSnackBar("Failed to save Image")
@@ -123,4 +147,6 @@ class PhotoEditorFragment : AbsLoadingDialog<FragmentPhotoEditorBinding>() {
         activity?.findViewById<MaterialTextView>(R.id.save)?.beGone()
         super.onDestroyView()
     }
+
+
 }

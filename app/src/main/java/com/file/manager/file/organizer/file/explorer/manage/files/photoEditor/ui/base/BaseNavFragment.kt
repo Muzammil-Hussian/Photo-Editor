@@ -10,11 +10,24 @@ import androidx.lifecycle.withResumed
 import androidx.lifecycle.withStarted
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
+import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.R
 import kotlinx.coroutines.launch
 
 abstract class BaseNavFragment : FragmentGeneral() {
 
     private var callback: OnBackPressedCallback? = null
+    val navOptions by lazy {
+        navOptions {
+            launchSingleTop = false
+            anim {
+                enter = R.anim.fragment_open_enter
+                exit = R.anim.fragment_open_exit
+                popEnter = R.anim.fragment_close_enter
+                popExit = R.anim.fragment_close_exit
+            }
+        }
+    }
 
     /**
      *  @since : Write Code for BackPress Functionality
@@ -76,7 +89,7 @@ abstract class BaseNavFragment : FragmentGeneral() {
     protected fun navigateTo(fragmentId: Int, action: Int) {
         launchWhenCreated {
             if (isAdded && isCurrentDestination(fragmentId)) {
-                findNavController().navigate(action)
+                findNavController().navigate(action, null, navOptions = navOptions)
             }
         }
     }

@@ -12,7 +12,6 @@ import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ph
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.dialog.showUnsavedChangesDialog
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.editor.PhotoEditorAdapter
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ui.base.AbsLoadingDialog
-import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ui.base.BaseFragment
 
 private const val TAG = "PhotoRotateFragmentLogs"
 
@@ -40,6 +39,7 @@ class PhotoRotateFragment : AbsLoadingDialog<FragmentPhotoRotateBinding>(), Crop
 
     private fun observeData() {
         photoEditorViewModel.resultUri.observe(viewLifecycleOwner) {
+            Log.i(TAG, "observeData: uri $it")
             binding.cropImageView.setImageUriAsync(it)
         }
     }
@@ -49,8 +49,8 @@ class PhotoRotateFragment : AbsLoadingDialog<FragmentPhotoRotateBinding>(), Crop
         adapter = PhotoEditorAdapter { position ->
             binding.cropImageView.apply {
                 when (position) {
-                    0 -> rotateImage(-90)
-                    1 -> rotateImage(90)
+                    0 -> rotateImage(ROTATE_LEFT)
+                    1 -> rotateImage(ROTATE_RIGHT)
                     2 -> flipImageHorizontally()
                     3 -> flipImageVertically()
                 }
@@ -78,13 +78,9 @@ class PhotoRotateFragment : AbsLoadingDialog<FragmentPhotoRotateBinding>(), Crop
             Log.i(TAG, "onCropImageComplete: Original uri: ${result.originalUri}")
             Log.i(TAG, "onCropImageComplete: Output bitmap: ${result.bitmap}")
             Log.i(TAG, "onCropImageComplete: Output uri: ${result.getUriFilePath(view.context)}")
-            photoEditorViewModel.bitmapToUri(result.bitmap!!)?.let {
-                Log.i(TAG, "onBitmapReady: uri: $it")
-                photoEditorViewModel.setUri(it)
-            } ?: {
-                photoEditorViewModel.setUri(result.uriContent!!)
-                Log.e(TAG, "Error while creating uri")
-            }
+            Log.i(TAG, "onCropImageComplete: uriContent: ${result.uriContent}")
+            result.uriContent?.let { photoEditorViewModel.setUri(it) }
+
         } else {
             Log.e(TAG, "${result.error} Failed to crop image")
             showToast("Crop failed: ${result.error?.message}")
@@ -96,6 +92,11 @@ class PhotoRotateFragment : AbsLoadingDialog<FragmentPhotoRotateBinding>(), Crop
     override fun onDestroyView() {
         binding.cropImageView.setOnCropImageCompleteListener(null)
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val ROTATE_LEFT = -90
+        private const val ROTATE_RIGHT = 90
     }
 }
 

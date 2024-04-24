@@ -48,10 +48,11 @@ class PhotoEditorRepositoryImpl(private val context: Context) : PhotoEditorRepos
 
     override fun convertBitmapToUri(bitmap: Bitmap): Uri? {
         val file = File(context.cacheDir, "SampleImage.jpg")
-        FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.JPEG, 85, out) }
+        FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out) }
 
         return try {
-            FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
+            return Uri.fromFile(file)
+//            FileProvider.getUriForFile(context, "${context.packageName}.provider", file)
         } catch (e: Exception) {
             e.printStackTrace()
             null

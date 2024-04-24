@@ -1,14 +1,17 @@
 package com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.crop
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import com.canhub.cropper.CropImageView
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.R
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.databinding.FragmentPhotoCropBinding
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.PhotoViewerUtil
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.dialog.showUnsavedChangesDialog
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ui.base.AbsLoadingDialog
+import java.io.File
 
 private const val TAG = "PhotoCropFragmentLogs"
 
@@ -34,7 +37,6 @@ class PhotoCropFragment : AbsLoadingDialog<FragmentPhotoCropBinding>(), CropImag
 
     private fun observeData() {
         photoEditorViewModel.resultUri.observe(viewLifecycleOwner) {
-            Log.i(TAG, "resultUri: $it")
             binding.cropImageView.setImageUriAsync(it)
         }
     }
@@ -45,13 +47,19 @@ class PhotoCropFragment : AbsLoadingDialog<FragmentPhotoCropBinding>(), CropImag
             Log.i(TAG, "onCropImageComplete: Original uri: ${result.originalUri}")
             Log.i(TAG, "onCropImageComplete: Output bitmap: ${result.bitmap}")
             Log.i(TAG, "onCropImageComplete: Output uri: ${result.getUriFilePath(view.context)}")
-            photoEditorViewModel.bitmapToUri(result.bitmap!!)?.let {
-                Log.i(TAG, "onBitmapReady: uri: $it")
-                photoEditorViewModel.setUri(it)
-            } ?: {
-                photoEditorViewModel.setUri(result.uriContent!!)
-                Log.e(TAG, "Error while creating uri")
-            }
+            Log.i(TAG, "onCropImageComplete: uriContent: ${result.uriContent}")
+
+            result.uriContent?.let { photoEditorViewModel.setUri(it) }
+
+
+//            photoEditorViewModel.bitmapToUri(result.bitmap!!)?.let {
+//                Log.i(TAG, "onBitmapReady: uri: $it")
+//                photoEditorViewModel.setUri(it)
+//
+//            } ?: {
+//                photoEditorViewModel.setUri(result.uriContent!!)
+//                Log.e(TAG, "Error while creating uri")
+//            }
 //            result.uriContent?.let { photoEditorViewModel.setUri(it) }
         } else {
             Log.e(TAG, "${result.error} Failed to crop image")

@@ -23,11 +23,10 @@ class MainFragment : AbsLoadingDialog<FragmentMainBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.i(TAG, "onViewCreated: called")
         photoEditorViewModel.showLoading()
-
         setupAdapter()
         diComponent.picturesViewModel.groupedPicturesByDateUiState.observe(viewLifecycleOwner) {
+            Log.i(TAG, "onViewCreated: groupedPictures $it")
             adapter.setData(it)
             photoEditorViewModel.hideLoading()
         }
@@ -53,6 +52,7 @@ class MainFragment : AbsLoadingDialog<FragmentMainBinding>() {
         adapter.callBackData = { position, listItem ->
             Log.i(TAG, "callbackData: position: $position, listItem: $listItem")
             photoEditorViewModel.fetchUriFromMediaStorePath(listItem.path)
+            Log.i(TAG, "setupAdapter: ${listItem.path}")
             navigateTo(R.id.mainFragment, R.id.action_mainFragment_to_photoEditorFragment)
 
         }
@@ -103,3 +103,4 @@ class MainFragment : AbsLoadingDialog<FragmentMainBinding>() {
         }
     }
 }
+

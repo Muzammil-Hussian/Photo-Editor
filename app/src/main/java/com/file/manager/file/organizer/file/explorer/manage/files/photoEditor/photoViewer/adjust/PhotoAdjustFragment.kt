@@ -5,17 +5,18 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
+import com.bumptech.glide.Glide
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.R
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.databinding.FragmentPhotoAdjustBinding
+import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.extensions.beGone
+import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.extensions.beVisible
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.PhotoViewerUtil
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.dialog.showUnsavedChangesDialog
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ui.base.AbsLoadingDialog
 import com.yalantis.ucrop.UCrop.of
 import com.yalantis.ucrop.callback.BitmapCropCallback
-import com.yalantis.ucrop.callback.BitmapLoadCallback
-import com.yalantis.ucrop.model.ExifInfo
-import com.yalantis.ucrop.util.BitmapLoadUtils
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.widget.HorizontalProgressWheelView
 import java.io.File
@@ -32,23 +33,65 @@ class PhotoAdjustFragment : AbsLoadingDialog<FragmentPhotoAdjustBinding>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        photoEditorViewModel.showLoading()
+        initialization()
         observeData()
         setupCropView()
         setupAdapter()
         clickListeners()
     }
 
+    private fun initialization() {
+        photoEditorViewModel.showLoading()
+    }
+
 
     private fun observeData() {
         photoEditorViewModel.resultUri.observe(viewLifecycleOwner) {
-            Log.i(TAG, "observeData: ")
+            Log.i(TAG, "observeData uri: $it")
+            photoEditorViewModel.hideLoading()
             uri = it
             destination = Uri.fromFile(File(globalContext.cacheDir, "SampleImage1.jpg"))
             of(uri, destination)
             binding.image.cropImageView.setImageUri(uri, destination)
-            photoEditorViewModel.hideLoading()
+            Glide.with(globalContext).load(it).into(binding.previewImage)
+        }
+    }
+
+    private val mImageListener: TransformImageView.TransformImageListener = object : TransformImageView.TransformImageListener {
+        override fun onLoadComplete() {
+            Log.i(TAG, "onLoadComplete")
+        }
+
+        override fun onLoadFailure(p0: Exception) {
+            Log.i(TAG, "onLoadFailure: exception: $p0")
+        }
+
+        override fun onRotate(p0: Float) {
+            Log.i(TAG, "onRotate: $p0")
+        }
+
+        override fun onScale(p0: Float) {
+            Log.i(TAG, "onScale: $p0")
+        }
+
+        override fun onBrightness(p0: Float) {
+            Log.i(TAG, "onBrightness: $p0")
+            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
+        }
+
+        override fun onContrast(p0: Float) {
+            Log.i(TAG, "onContrast: $p0")
+            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
+        }
+
+        override fun onSaturation(p0: Float) {
+            Log.i(TAG, "onSaturation: $p0")
+            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
+        }
+
+        override fun onSharpness(p0: Float) {
+            Log.i(TAG, "onSharpness: $p0")
+            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
         }
     }
 
@@ -60,7 +103,6 @@ class PhotoAdjustFragment : AbsLoadingDialog<FragmentPhotoAdjustBinding>() {
                 isScaleEnabled = false
                 setTransformImageListener(mImageListener)
                 rulerChangeListener(0)
-
             }
 
             overlayView.apply {
@@ -74,23 +116,25 @@ class PhotoAdjustFragment : AbsLoadingDialog<FragmentPhotoAdjustBinding>() {
     }
 
     private fun setupAdapter() {
-        adapter = PhotoAdjustAdapter {
-            val value: Int = when (PhotoAdjustAdapter.selectedPosition) {
-                0 -> binding.image.cropImageView.currentBrightness.toInt()
-                1 -> binding.image.cropImageView.currentContrast.toInt()
-                2 -> binding.image.cropImageView.currentSaturation.toInt()
-                3 -> binding.image.cropImageView.currentSharpness.toInt()
-                else -> binding.image.cropImageView.currentBrightness.toInt()
-            }
+        with(binding) {
+            adapter = PhotoAdjustAdapter {
+                image.cropImageView.apply {
+                    val value: Int = when (PhotoAdjustAdapter.selectedPosition) {
+                        0 -> currentBrightness.toInt()
+                        1 -> currentContrast.toInt()
+                        2 -> currentSaturation.toInt()
+                        3 -> currentSharpness.toInt()
+                        else -> currentBrightness.toInt()
+                    }
 
-            binding.apply {
-                rulerCurrentValue.text = value.toString()
-            }
+                    rulerCurrentValue.text = value.toString()
 
-            rulerChangeListener(it)
+                    rulerChangeListener(it)
+                }
+            }
+            recyclerView.adapter = adapter
+            adapter.submitList(PhotoViewerUtil.adjustPhotoOptionsList)
         }
-        binding.recyclerView.adapter = adapter
-        adapter.submitList(PhotoViewerUtil.adjustPhotoOptionsList)
     }
 
     private fun rulerChangeListener(position: Int) {
@@ -119,36 +163,22 @@ class PhotoAdjustFragment : AbsLoadingDialog<FragmentPhotoAdjustBinding>() {
         })
     }
 
-    private val mImageListener: TransformImageView.TransformImageListener = object : TransformImageView.TransformImageListener {
-        override fun onLoadComplete() {}
-
-        override fun onLoadFailure(p0: Exception) {}
-
-        override fun onRotate(p0: Float) {}
-
-        override fun onScale(p0: Float) {}
-
-        override fun onBrightness(p0: Float) {
-            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
-        }
-
-        override fun onContrast(p0: Float) {
-            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
-        }
-
-        override fun onSaturation(p0: Float) {
-            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
-        }
-
-        override fun onSharpness(p0: Float) {
-            binding.rulerCurrentValue.text = String.format(Locale.getDefault(), "%d", p0.toInt())
-        }
-    }
 
     private fun clickListeners() {
         binding.apply {
             close.setOnClickListener { mainActivity.showUnsavedChangesDialog { popFrom(R.id.photoAdjustFragment) } }
+            preview.setOnTouchListener { _, motionEvent ->
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        binding.previewImage.beVisible()
+                    }
 
+                    MotionEvent.ACTION_UP -> {
+                        binding.previewImage.beGone()
+                    }
+                }
+                return@setOnTouchListener true
+            }
             done.setOnClickListener {
                 photoEditorViewModel.showLoading()
                 binding.image.cropImageView.cropAndSaveImage(
@@ -174,6 +204,11 @@ class PhotoAdjustFragment : AbsLoadingDialog<FragmentPhotoAdjustBinding>() {
                     })
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.image.cropImageView.cancelAllAnimations()
     }
 
     companion object {

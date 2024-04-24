@@ -84,6 +84,12 @@
         android:id="@+id/shareImageFragment"
         android:name="com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.shareImage.ShareImageFragment"
         android:label="Share file"
-        tools:layout="@layout/fragment_share_image" />
+        tools:layout="@layout/fragment_share_image" >
+        <action
+            android:id="@+id/action_shareImageFragment_to_mainFragment"
+            app:destination="@id/mainFragment"
+            app:popUpTo="@id/shareImageFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 
 </navigation>

@@ -4,21 +4,24 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.navOptions
 import androidx.viewbinding.ViewBinding
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.MainActivity
+import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.R
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.di.DIComponent
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.photoViewer.PhotoEditorViewModel
 import dev.shreyaspatil.permissionFlow.PermissionFlow
-import dev.shreyaspatil.permissionFlow.utils.launch
 import dev.shreyaspatil.permissionFlow.utils.registerForPermissionFlowRequestsResult
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.lang.reflect.ParameterizedType
 
+private const val TAG = "BaseFragmentLogs"
 
 abstract class BaseFragment<VB : ViewBinding> : BaseNavFragment() {
 
@@ -40,11 +43,15 @@ abstract class BaseFragment<VB : ViewBinding> : BaseNavFragment() {
     protected val diComponent by lazy { DIComponent() }
     val photoEditorViewModel: PhotoEditorViewModel by activityViewModel()
 
-    private val permissions by lazy { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) android.Manifest.permission.READ_MEDIA_IMAGES else android.Manifest.permission.READ_EXTERNAL_STORAGE }
+    private val permissions by lazy {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) arrayOf(android.Manifest.permission.READ_MEDIA_IMAGES)
+        else arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
 
     private val permissionFlow by lazy { PermissionFlow.getInstance() }
 
     private val permissionLauncher by lazy { registerForPermissionFlowRequestsResult() }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val type = javaClass.genericSuperclass
@@ -72,21 +79,35 @@ abstract class BaseFragment<VB : ViewBinding> : BaseNavFragment() {
 
     private fun observePermissions() {
         viewLifecycleOwner.lifecycleScope.launch {
-            permissionFlow.getPermissionState(permissions).collect { state ->
+
+            permissionFlow.getMultiplePermissionState(*permissions).collect { state ->
+
+
+                // Check whether all permissions are granted
+                val allGranted = state.allGranted
+
+                // List of granted permissions
+                val grantedPermissions = state.grantedPermissions
+
+                // List of denied permissions
+                val deniedPermissions = state.deniedPermissions
+
+                // List of permissions requiring rationale
+                val permissionsRequiringRationale = state.permissionsRequiringRationale
+
+                Log.i(TAG, "observePermissions: allGranted: $allGranted")
+                Log.i(TAG, "observePermissions: granterPermissionList: $grantedPermissions")
+                Log.i(TAG, "observePermissions: deniedPermissionsList: $deniedPermissions")
+                Log.i(TAG, "observePermissions: permissionRequiredRationale: $permissionsRequiringRationale")
                 when {
-                    state.isGranted -> {
+                    state.allGranted -> {
                         //permission granted
                         diComponent.picturesViewModel.fetchPicturesListGroupedByDate()
                     }
 
-                    state.isRationaleRequired == true -> {
-                        // permission show rational dialog
-                        println("show rational dialog")
-                    }
-
                     else -> {
                         //permission denied
-                        println("permission denied")
+                        Log.i(TAG, "observePermissions: permission denied")
                     }
                 }
             }

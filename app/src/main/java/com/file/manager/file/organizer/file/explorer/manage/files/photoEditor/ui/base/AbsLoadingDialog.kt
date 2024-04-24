@@ -51,5 +51,4 @@ abstract class AbsLoadingDialog<VB : ViewBinding> : BaseFragment<VB>() {
         loadingProgressDialog = null
         super.onDestroyView()
     }
-
 }

@@ -6,7 +6,6 @@ import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.ph
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.repository.PicturesRepository
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.repository.PicturesRepositoryImpl
 import com.file.manager.file.organizer.file.explorer.manage.files.photoEditor.viewModel.PicturesViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

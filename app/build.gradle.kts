@@ -66,4 +66,6 @@ dependencies {
     implementation(libs.android.image.cropper)
 
     implementation(libs.lottie)
+
+    implementation("io.coil-kt:coil:2.6.0")
 }
